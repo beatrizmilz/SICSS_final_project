@@ -1,0 +1,10 @@
+---
+title: "Exploratory analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+- Quais sao as principais categorias relacionadas às paginas na categoria de mudancas climáticas?
