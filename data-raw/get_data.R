@@ -47,4 +47,5 @@ usethis::use_data(contribuidores, overwrite = TRUE)
 
 contribuidores_outras_paginas <- wikihistory::get_all_edits(contribuidores)
 
+usethis::use_data(contribuidores_outras_paginas, overwrite = TRUE)
 
