@@ -7,8 +7,21 @@
 
 # Vamos buscar as paginas na categoria mudanças climaticas
 
-paginas_mudancas_climaticas <- wikihistory::get_pages_in_categories("Mudanças climáticas", "pt")
+paginas_categoria_mudancas_climaticas <- wikihistory::get_pages_in_categories("Mudanças climáticas", "pt")
 
+paginas_predefinicao_mudanca_do_clima <-  wikihistory::get_template("Mudança do clima", lang = "pt")
+
+paginas_mudancas_climaticas <- c(
+  paginas_categoria_mudancas_climaticas$page_name,
+  paginas_predefinicao_mudanca_do_clima$page_name
+) %>%
+  tibble::enframe() %>%
+  dplyr::mutate(value = stringr::str_squish(value)) %>%
+  dplyr::distinct(value) %>%
+  dplyr::filter(value != "Predefinição:Mudança do clima")
+
+
+View(paginas_mudancas_climaticas)
 
 dplyr::glimpse(paginas_mudancas_climaticas)
 
@@ -22,6 +35,8 @@ categorias <- purrr::map_dfr(.x = paginas_mudancas_climaticas$page_name,
 
 usethis::use_data(categorias, overwrite = TRUE)
 
+View(categorias)
+
 # qual é o historico de mudanças dessas páginas?
 
 historico_mudancas_raw <- purrr::map_dfr(.x = paginas_mudancas_climaticas$page_name,
@@ -30,6 +45,8 @@ historico_mudancas_raw <- purrr::map_dfr(.x = paginas_mudancas_climaticas$page_n
 
 historico_mudancas <-  wikihistory::clean_history(historico_mudancas_raw, lang = "pt")
 
+
+View(historico_mudancas)
 
 usethis::use_data(historico_mudancas, overwrite = TRUE)
 
