@@ -49,22 +49,22 @@ usethis::use_data(categorias, overwrite = TRUE)
 
 View(categorias)
 
-# ATÉ AQUI TÁ OK!
-
-
 # qual é o historico de mudanças dessas páginas?
 
-possibly_get_history <- function(page){
-  history <- wikihistory::get_history(page)
+modified_get_history <- function(page) {
   print(page)
-  history
+  wikihistory::get_history(page, lang = "pt")
 }
 
-possibly_get_history(paginas_mudancas_climaticas$page_name[1])
+
 
 historico_mudancas_raw <- purrr::map_dfr(.x = paginas_mudancas_climaticas$page_name,
-               .f = purrr::possibly(wikihistory::get_history, otherwise = "Erro"),
-               lang = "pt")
+                                         modified_get_history)
+              # .f =wikihistory::get_history,
+              # lang = "pt")
+
+# historico_mudancas_raw %>%
+#   dplyr::count(page, sort = TRUE) %>% View()
 
 historico_mudancas <-  wikihistory::clean_history(historico_mudancas_raw, lang = "pt")
 
@@ -74,10 +74,16 @@ View(historico_mudancas)
 usethis::use_data(historico_mudancas, overwrite = TRUE)
 
 
-# quem é que faz as mudancas? remover os IPs
+# ATÉ AQUI TÁ OK!
+
+
+# quem é que faz as mudancas?
 
 contribuidores <- wikihistory::get_users_edits(historico_mudancas) %>%
   wikihistory::clean_ip()
+
+# contribuidores %>% tibble::enframe() %>% dplyr::distinct(value)
+
 
 
 usethis::use_data(contribuidores, overwrite = TRUE)
