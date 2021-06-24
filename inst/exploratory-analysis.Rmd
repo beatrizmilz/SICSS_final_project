@@ -7,6 +7,13 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+```{r}
+devtools::load_all()
+
+SICSS_final_project::categorias
+```
+
 - Quais sao as principais categorias relacionadas às paginas na categoria de mudancas climáticas?
 
 
@@ -25,10 +32,22 @@ Quase 3/4 das pessoas que contribuíram nessas páginas não optaram em apresent
 
 
 ```{r}
+historico_mudancas %>% 
+  dplyr::count(user, sort = TRUE)
+
 contribuidores_outras_paginas %>%
   dplyr::count(page_title,  sort = TRUE) %>%
   dplyr::mutate(porcentagem = round(n / n_contrib * 100, 2))
 ```
+
+
+```{r}
+contribuidores_outras_paginas
+```
+
+
+
+
 
 ```{r}
 paginas_mais_contribuidas <- contribuidores_outras_paginas %>% 
