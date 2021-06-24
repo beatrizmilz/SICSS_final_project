@@ -74,8 +74,6 @@ View(historico_mudancas)
 usethis::use_data(historico_mudancas, overwrite = TRUE)
 
 
-# ATÉ AQUI TÁ OK!
-
 
 # quem é que faz as mudancas?
 
