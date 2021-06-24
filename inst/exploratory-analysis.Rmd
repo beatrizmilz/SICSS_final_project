@@ -8,3 +8,45 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 - Quais sao as principais categorias relacionadas às paginas na categoria de mudancas climáticas?
+
+
+
+- Quantas pessoas identificadas (e não é IP) contribuiram?
+
+```{r}
+n_contrib <- contribuidores_outras_paginas %>% 
+  dplyr::distinct(id_user) %>% 
+  nrow()
+
+n_contrib
+```
+
+Quase 3/4 das pessoas que contribuíram nessas páginas não optaram em apresentar esses dados :(
+
+
+```{r}
+contribuidores_outras_paginas %>%
+  dplyr::count(page_title,  sort = TRUE) %>%
+  dplyr::mutate(porcentagem = round(n / n_contrib * 100, 2))
+```
+
+```{r}
+paginas_mais_contribuidas <- contribuidores_outras_paginas %>% 
+  dplyr::count(page_title, sort = TRUE) %>% 
+  dplyr::filter(page_title != "This user has not opted in to have this data shown",
+                n > 9 
+                ) 
+```
+
+```{r}
+categorias_mais_contribuidas <- purrr::map_dfr(.x = paginas_mais_contribuidas$page_title,
+               .f = wikihistory::get_categories,
+               lang = "pt")
+
+
+usethis::use_data(categorias_mais_contribuidas, overwrite = TRUE)
+
+categorias_mais_contribuidas %>% 
+  dplyr::count(category, sort = TRUE)
+```
+
