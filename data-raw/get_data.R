@@ -18,7 +18,8 @@ paginas_mudancas_climaticas <- c(
   tibble::enframe() %>%
   dplyr::mutate(value = stringr::str_squish(value)) %>%
   dplyr::distinct(value) %>%
-  dplyr::filter(value != "Predefinição:Mudança do clima")
+  dplyr::filter(value != "Predefinição:Mudança do clima") %>%
+  dplyr::rename("page_name" = value)
 
 
 View(paginas_mudancas_climaticas)
