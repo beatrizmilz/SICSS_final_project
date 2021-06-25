@@ -1,0 +1,18 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Os usuários são os nós,
+
+```{r}
+SICSS_final_project::historico_mudancas %>% 
+  dplyr::count(page, user) %>%
+  tidyr::pivot_wider(names_from = user, values_from = n, values_fill = 0) %>% 
+  View()
+```
+

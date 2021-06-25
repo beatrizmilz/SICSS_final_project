@@ -10,23 +10,67 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 devtools::load_all()
-
-SICSS_final_project::categorias
 ```
 
 - Quais sao as principais categorias relacionadas às paginas na categoria de mudancas climáticas?
+```{r}
+SICSS_final_project::categorias %>% dplyr::count(category, sort = TRUE)
+```
 
-
-
-- Quantas pessoas identificadas (e não é IP) contribuiram?
+- Quantos usuários contribuiram?
 
 ```{r}
-n_contrib <- contribuidores_outras_paginas %>% 
-  dplyr::distinct(id_user) %>% 
+n_contrib <- SICSS_final_project::historico_mudancas %>% 
+  dplyr::distinct(user) %>% 
   nrow()
 
 n_contrib
 ```
+
+
+```{r}
+contribuidores_disponibilizam <- contribuidores_outras_paginas %>% 
+  dplyr::filter(page_title != "This user has not opted in to have this data shown") %>% 
+ dplyr::count(id_user)
+
+
+numero_modificacoes <- nrow(SICSS_final_project::historico_mudancas)
+
+porcentagem_contribuicao_modificacoes <-
+  SICSS_final_project::historico_mudancas %>%
+  dplyr::count(user, sort = TRUE) %>%
+  dplyr::mutate(porcentagem = n / numero_modificacoes * 100)
+
+
+sum(porcentagem_contribuicao_modificacoes$porcentagem)
+
+porcentagem_contribuicao_modificacoes %>% 
+  dplyr::filter(user %in% contribuidores_disponibilizam$id_user) %>% 
+  dplyr::summarise(porcentagem = sum(porcentagem))
+
+
+porcentagem_contribuicao_caracteres <- SICSS_final_project::historico_mudancas %>%
+  dplyr::mutate(total_characters = n_characters_removed + n_characters_added) %>% 
+  dplyr::group_by(user) %>% 
+ dplyr::summarise(soma_total_caracteres = sum(total_characters)) %>%  
+  dplyr::ungroup() %>% 
+  dplyr::arrange(desc(soma_total_caracteres)) %>% 
+  dplyr::filter(soma_total_caracteres > 0) %>% 
+  dplyr::mutate(n = sum(soma_total_caracteres), 
+                porcentagem = soma_total_caracteres/n * 100
+                ) %>% 
+  dplyr::select(-n)
+
+
+sum(porcentagem_contribuicao_caracteres$porcentagem)
+
+
+porcentagem_contribuicao_caracteres %>% 
+  dplyr::filter(user %in% contribuidores_disponibilizam$id_user) %>% 
+  dplyr::summarise(porcentagem = sum(porcentagem))
+
+```
+
 
 Quase 3/4 das pessoas que contribuíram nessas páginas não optaram em apresentar esses dados :(
 
